@@ -1,4 +1,5 @@
 from texweaver import TexParser
+from texweaver import DefaultConfig
 def test_parser():
     src = """
 # Heading 1
@@ -18,10 +19,12 @@ This is an inline code `print('Hello, World!')`.
 ## Heading 2
 
 This is a code block:
+
 ```python
 def hello_world():
     print('Hello, World!')
 ```
+
 This is an inline LaTeX formula: $E = mc^2$.
 
 This is a LaTeX formula block:
@@ -45,7 +48,9 @@ This is an ordered list:
     
     parser = TexParser()
     parser.parse(src)
-    print(parser.doc.to_json())
+    mdoc = parser.doc
+    latex = mdoc.to_latex(DefaultConfig)
+    print(latex)
     
 if __name__ == '__main__':
     test_parser()

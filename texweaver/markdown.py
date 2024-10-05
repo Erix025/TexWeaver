@@ -8,7 +8,7 @@ class Document:
         self.components.append(component)    
     
     def to_latex(self, config : TexConfig):
-        return '\n'.join([c.to_latex() for c in self.components])
+        return '\n'.join([c.to_latex(config) for c in self.components])
     
     def to_json(self):
         obj = {
@@ -26,8 +26,8 @@ class Paragraph:
     def add_component(self, component):
         self.components.append(component)
         
-    def to_latex(self):
-        return ''.join([c.to_latex() for c in self.components])
+    def to_latex(self, config : TexConfig):
+        return ''.join([c.to_latex(config) for c in self.components]) + '\n\n'
     
     def to_json(self):
         return {
@@ -40,7 +40,7 @@ class Text:
         self.text = text
         
     def to_latex(self, config : TexConfig):
-        return self.text
+        return config.apply('text', content=self.text)
     
     def to_json(self):
         return {
@@ -53,7 +53,7 @@ class InlineBold:
         self.text = text
         
     def to_latex(self, config : TexConfig):
-        return '\\textbf{%s}' % self.text
+        return config.apply('bold', content=self.text)
     
     def to_json(self):
         return {
@@ -66,7 +66,7 @@ class InlineItalic:
         self.text = text
         
     def to_latex(self, config : TexConfig):
-        return '\\textit{%s}' % self.text
+        return config.apply('italic', content=self.text)
     
     def to_json(self):
         return {
@@ -79,7 +79,7 @@ class InlineCode:
         self.text = text
         
     def to_latex(self, config : TexConfig):
-        return '\\texttt{%s}' % self.text
+        return config.apply('inline_code', content=self.text)
     
     def to_json(self):
         return {
@@ -92,11 +92,24 @@ class InlineFormula:
         self.text = text
         
     def to_latex(self, config : TexConfig):
-        return '$%s$' % self.text
+        return config.apply('inline_formula', content=self.text)
     
     def to_json(self):
         return {
             'type': 'inline_formula',
+            'text': self.text
+        }
+        
+class FormulaBlock:
+    def __init__(self, text):
+        self.text = text
+        
+    def to_latex(self, config : TexConfig):
+        return config.apply('formula_block', content=self.text)
+    
+    def to_json(self):
+        return {
+            'type': 'formula_block',
             'text': self.text
         }
     
@@ -109,7 +122,7 @@ class CodeBlock:
         self.code.append(code)
         
     def to_latex(self, config : TexConfig):
-        return '\\begin{lstlisting}[language=%s]\n%s\n\\end{lstlisting}' % (self.lang, '\n'.join(self.code))
+        return config.apply('code_block', code='\n'.join(self.code), lang=self.lang)
     def to_json(self):
         return {
             'type': 'code_block',
@@ -123,7 +136,7 @@ class Image:
         self.caption = caption
         
     def to_latex(self, config : TexConfig):
-        return '\\begin{figure}\n\\centering\n\\includegraphics{%s}\n\\caption{%s}\n\\end{figure}' % (self.path, self.caption)
+        return config.apply('image', src=self.path, alt=self.caption)
     
     def to_json(self):
         return {
@@ -138,14 +151,16 @@ class Heading:
         self.level = level
         
     def to_latex(self, config : TexConfig):
-        if self.level == 2:
-            return '\\chapter{%s}\n' % self.title
+        if self.level == 1:
+            return config.apply('heading1', content=self.title)
+        elif self.level == 2:
+            return config.apply('heading2', content=self.title)
         elif self.level == 3:
-            return '\\section{%s}\n' % self.title
+            return config.apply('heading3', content=self.title)
         elif self.level == 4:
-            return '\\subsection{%s}\n' % self.title
+            return config.apply('heading4', content=self.title)
         else:
-            return '\\textbf{%s}\n' % self.title
+            return config.apply('bold', content=self.title)
         
     def to_json(self):
         return {
@@ -162,7 +177,7 @@ class OrderedList:
         self.items.append(item)
         
     def to_latex(self, config : TexConfig):
-        return '\\begin{enumerate}\n%s\n\\end{enumerate}' % '\n'.join(['\\item %s' % i.to_latex() for i in self.items])
+        return config.apply('ordered_list', items='\n'.join([i.to_latex(config) for i in self.items]))
     
     def to_json(self):
         return {
@@ -179,7 +194,7 @@ class UnorderedList:
         self.items.append(item)
         
     def to_latex(self, config : TexConfig):
-        return '\\begin{itemize}\n%s\n\\end{itemize}' % '\n'.join(['\\item %s' % i.to_latex() for i in self.items])
+        return config.apply('unordered_list', items='\n'.join([i.to_latex(config) for i in self.items]))
     
     def to_json(self):
         return {
@@ -195,7 +210,7 @@ class ListItem:
         self.components.append(component)
         
     def to_latex(self, config : TexConfig):
-        return ''.join([c.to_latex() for c in self.components])
+        return config.apply('list_item', content=''.join([c.to_latex(config) for c in self.components]))
     
     def to_json(self):
         return {

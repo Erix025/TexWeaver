@@ -14,6 +14,8 @@ class TexParser:
             self._parse_line(line)
 
     def _parse_line(self, line):
+        # remove leading and trailing whitespaces
+        line = line.strip()
         # Codeblock
         if line.startswith("```"):
             if self.in_code_block:
@@ -40,19 +42,19 @@ class TexParser:
 
         # unordered list
         if re.match(r"^[-+*]\s", line):
-            if self.current_list is None or not isinstance(self.current_list, UnorderedList):
+            if self.current_list is None or not isinstance(self.current_list, xwm.UnorderedList):
                 # start new unordered list
                 self.current_list = xwm.UnorderedList()
-                self.document.add_element(self.current_list)
+                self.document.add_component(self.current_list)
             self._parse_list_item(line, self.current_list)
             return
 
         # ordered list
         if re.match(r"^\d+\.\s", line):
-            if self.current_list is None or not isinstance(self.current_list, OrderedList):
+            if self.current_list is None or not isinstance(self.current_list, xwm.OrderedList):
                 # start new ordered list
                 self.current_list = xwm.OrderedList()
-                self.document.add_element(self.current_list)
+                self.document.add_component(self.current_list)
             self._parse_list_item(line, self.current_list)
             return
         
@@ -103,7 +105,7 @@ class TexParser:
     def _parse_list_item(self, line, list_obj):
         item = xwm.ListItem()
         content = re.sub(r"^[-+*]\s|\d+\.\s", "", line).strip()
-        item.add_text(content)
+        item.add_component(xwm.Text(content))
         list_obj.add_item(item)
 
     @property

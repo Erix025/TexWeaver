@@ -7,6 +7,14 @@ setup(
     author='Eric025',
     author_email='erix025@outlook.com',
     packages=find_packages(),
+    package_data={
+        'texweaver': ['default.yaml'],
+    },
+    entry_points={
+        'console_scripts': [
+            'texweaver = texweaver.entrypoint:main',
+        ],
+    },
     install_requires=[
     ],
 )
