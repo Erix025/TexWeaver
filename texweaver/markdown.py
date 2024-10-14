@@ -1,5 +1,11 @@
 from .tex_config import TexConfig
 import json
+
+def preprocess_text(text):
+    # replace underscores with \_
+    text = text.replace('_', r'\_')
+    return text
+
 class Document:
     def __init__(self):
         self.components = []
@@ -19,7 +25,7 @@ class Document:
         return json_str
         
 
-class Paragraph:
+class Content:
     def __init__(self):
         self.components = []
     
@@ -27,17 +33,17 @@ class Paragraph:
         self.components.append(component)
         
     def to_latex(self, config : TexConfig):
-        return ''.join([c.to_latex(config) for c in self.components]) + '\n\n'
+        return ''.join([c.to_latex(config) for c in self.components])
     
     def to_json(self):
         return {
-            'type': 'paragraph',
+            'type': 'content',
             'components': [c.to_json() for c in self.components]
-        }
-    
+        }        
+
 class Text:
-    def __init__(self, text):
-        self.text = text
+    def __init__(self, text: str):
+        self.text = preprocess_text(text)
         
     def to_latex(self, config : TexConfig):
         return config.apply('text', content=self.text)
@@ -49,8 +55,8 @@ class Text:
         }
     
 class InlineBold:
-    def __init__(self, text):
-        self.text = text
+    def __init__(self, text: str):
+        self.text = preprocess_text(text)
         
     def to_latex(self, config : TexConfig):
         return config.apply('bold', content=self.text)
@@ -62,8 +68,8 @@ class InlineBold:
         }
     
 class InlineItalic:
-    def __init__(self, text):
-        self.text = text
+    def __init__(self, text: str):
+        self.text = preprocess_text(text)
         
     def to_latex(self, config : TexConfig):
         return config.apply('italic', content=self.text)
@@ -75,8 +81,8 @@ class InlineItalic:
         }
     
 class InlineCode:
-    def __init__(self, text):
-        self.text = text
+    def __init__(self, text: str):
+        self.text = preprocess_text(text)
         
     def to_latex(self, config : TexConfig):
         return config.apply('inline_code', content=self.text)
@@ -88,7 +94,7 @@ class InlineCode:
         }
     
 class InlineFormula:
-    def __init__(self, text):
+    def __init__(self, text: str):
         self.text = text
         
     def to_latex(self, config : TexConfig):
@@ -98,6 +104,19 @@ class InlineFormula:
         return {
             'type': 'inline_formula',
             'text': self.text
+        }
+        
+class Paragraph:
+    def __init__(self, content: Content):
+        self.content = content
+        
+    def to_latex(self, config : TexConfig):
+        return config.apply('paragraph', content=self.content.to_latex(config))
+    
+    def to_json(self):
+        return {
+            'type': 'paragraph',
+            'content': self.content.to_json()
         }
         
 class FormulaBlock:
@@ -131,41 +150,42 @@ class CodeBlock:
         }
     
 class Image:
-    def __init__(self, path, caption):
+    def __init__(self, path: str, caption: Content):
         self.path = path
         self.caption = caption
         
     def to_latex(self, config : TexConfig):
-        return config.apply('image', src=self.path, alt=self.caption)
+        return config.apply('image', src=self.path, alt=self.caption.to_latex(config))
     
     def to_json(self):
         return {
             'type': 'image',
             'path': self.path,
-            'caption': self.caption
+            'caption': self.caption.to_json()
         }
     
 class Heading:
-    def __init__(self, title, level):
+    def __init__(self, title: Content, level):
         self.title = title
         self.level = level
         
     def to_latex(self, config : TexConfig):
+        content = self.title.to_latex(config)
         if self.level == 1:
-            return config.apply('heading1', content=self.title)
+            return config.apply('heading1', content=content)
         elif self.level == 2:
-            return config.apply('heading2', content=self.title)
+            return config.apply('heading2', content=content)
         elif self.level == 3:
-            return config.apply('heading3', content=self.title)
+            return config.apply('heading3', content=content)
         elif self.level == 4:
-            return config.apply('heading4', content=self.title)
+            return config.apply('heading4', content=content)
         else:
-            return config.apply('bold', content=self.title)
+            return config.apply('bold', content=content)
         
     def to_json(self):
         return {
             'type': 'heading',
-            'title': self.title,
+            'title': self.title.to_json(),
             'level': self.level,
         }
     
