@@ -23,8 +23,7 @@ class TexParser:
         return line
 
     def _parse_line(self, line):
-        # remove leading and trailing whitespaces
-        line = self._preprocess_line(line)
+
         # Codeblock
         if line.startswith("```"):
             if self.in_code_block:
@@ -49,6 +48,9 @@ class TexParser:
             self.current_code_block.add_code(line)
             return
 
+        # remove leading and trailing whitespaces
+        line = self._preprocess_line(line)
+
         # unordered list
         if re.match(r"^[-+*]\s", line):
             if self.current_list is None or not isinstance(self.current_list, xwm.UnorderedList):
@@ -66,6 +68,8 @@ class TexParser:
                 self.document.add_component(self.current_list)
             self._parse_list_item(line, self.current_list)
             return
+        
+        self.current_list = None
         
         # heading
         pattern = r'^(#+)\s+(.*)'

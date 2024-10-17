@@ -179,6 +179,8 @@ class Heading:
             return config.apply('heading3', content=content)
         elif self.level == 4:
             return config.apply('heading4', content=content)
+        elif self.level == 5:
+            return config.apply('heading5', content=content)
         else:
             return config.apply('bold', content=content)
         
