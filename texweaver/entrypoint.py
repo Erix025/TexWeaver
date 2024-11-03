@@ -16,11 +16,11 @@ def main():
 def process_file(input_file, output_file):
     # Implement your file processing logic here
     parser = TexParser()
-    with open(input_file, 'r') as f:
+    with open(input_file, 'r', encoding='utf-8') as f:
         src = f.read()
         parser.parse(src)
     doc = parser.doc
-    with open(output_file, 'w') as f:
+    with open(output_file, 'w', encoding='utf-8') as f:
         f.write(doc.to_latex(DefaultConfig))
 
 if __name__ == '__main__':
