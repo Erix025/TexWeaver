@@ -2,7 +2,11 @@ from setuptools import setup, find_packages
 
 setup(
     name='texweaver',
+<<<<<<< Updated upstream
     version='0.3.0',
+=======
+    version='0.3.1',
+>>>>>>> Stashed changes
     description='A simple converter from Markdown to LaTeX',
     author='Eric025',
     author_email='erix025@outlook.com',
