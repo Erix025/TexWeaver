@@ -1,6 +1,7 @@
-from .tex_config import TexConfig, DefaultConfig
-from . import markdown as xwm
 import re
+
+from . import markdown as xwm
+from .tex_config import DefaultConfig, TexConfig
 
 
 class TexParser:
@@ -19,7 +20,7 @@ class TexParser:
         # remove leading and trailing whitespaces
         line = line.strip()
         # remove trailing comments
-        line = re.sub(r'<!--.*-->', '', line)
+        line = re.sub(r"<!--.*-->", "", line)
         return line
 
     def _parse_line(self, line):
@@ -53,7 +54,9 @@ class TexParser:
 
         # unordered list
         if re.match(r"^[-+*]\s", line):
-            if self.current_list is None or not isinstance(self.current_list, xwm.UnorderedList):
+            if self.current_list is None or not isinstance(
+                self.current_list, xwm.UnorderedList
+            ):
                 # start new unordered list
                 self.current_list = xwm.UnorderedList()
                 self.document.add_component(self.current_list)
@@ -62,60 +65,62 @@ class TexParser:
 
         # ordered list
         if re.match(r"^\d+\.\s", line):
-            if self.current_list is None or not isinstance(self.current_list, xwm.OrderedList):
+            if self.current_list is None or not isinstance(
+                self.current_list, xwm.OrderedList
+            ):
                 # start new ordered list
                 self.current_list = xwm.OrderedList()
                 self.document.add_component(self.current_list)
             self._parse_list_item(line, self.current_list)
             return
-        
+
         self.current_list = None
-        
+
         # heading
-        pattern = r'^(#+)\s+(.*)'
+        pattern = r"^(#+)\s+(.*)"
         match = re.match(pattern, line)
         if match:
             level = len(match.group(1))
             title = self._parse_content(match.group(2))
             self.document.add_component(xwm.Heading(title=title, level=level))
             return
-        
+
         # image
-        pattern = r'!\[([^\]]+)\]\(([^)]+)\)'
+        pattern = r"!\[([^\]]+)\]\(([^)]+)\)"
         match = re.match(pattern, line)
         if match:
             caption = self._parse_content(match.group(1))
             path = match.group(2)
             self.document.add_component(xwm.Image(path=path, caption=caption))
             return
-        
+
         # paragraph
-        content = self._parse_content(line)     
+        content = self._parse_content(line)
         if len(content.components) > 0:
             self.document.add_component(xwm.Paragraph(content))
 
     def _parse_content(self, line):
         # 正则表达式匹配内联代码和公式
-        pattern = r'(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`|\$[^$]+\$|[^`$*]+)'
+        pattern = r"(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`|\$[^$]+\$|[^`$*]+)"
         matches = re.findall(pattern, line)
 
         content = xwm.Content()
 
         for match in matches:
-            if match.startswith('`') and match.endswith('`'):
+            if match.startswith("`") and match.endswith("`"):
                 # 内联代码
                 content.add_component(xwm.InlineCode(match[1:-1]))
-            elif match.startswith('$') and match.endswith('$'):
+            elif match.startswith("$") and match.endswith("$"):
                 # 数学公式
                 content.add_component(xwm.InlineFormula(match[1:-1]))
-            elif match.startswith('**') and match.endswith('**'):
+            elif match.startswith("**") and match.endswith("**"):
                 content.add_component(xwm.InlineBold(match[2:-2]))
-            elif match.startswith('*') and match.endswith('*'):
+            elif match.startswith("*") and match.endswith("*"):
                 content.add_component(xwm.InlineItalic(match[1:-1]))
             else:
                 # 普通文本
                 content.add_component(xwm.Text(match))
-                
+
         return content
 
     def _parse_list_item(self, line, list_obj):
