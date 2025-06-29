@@ -10,6 +10,8 @@ class TexParser:
         self.in_code_block = False
         self.current_code_block = None
         self.current_list = None
+        self.in_formula_block = False
+        self.current_formula_content = []
 
     def parse(self, markdown_text):
         lines = markdown_text.splitlines()
@@ -24,6 +26,28 @@ class TexParser:
         return line
 
     def _parse_line(self, line):
+
+        # Block formula ($$...$$)
+        if line.startswith("$$"):
+            if self.in_formula_block:
+                # close formula block
+                formula_content = "\n".join(self.current_formula_content)
+                self.document.add_component(xwm.FormulaBlock(formula_content))
+                self.in_formula_block = False
+                self.current_formula_content = []
+            else:
+                # open formula block
+                self.in_formula_block = True
+                # Check if there's content on the same line
+                content_on_line = line[2:].strip()
+                if content_on_line:
+                    self.current_formula_content.append(content_on_line)
+            return
+
+        if self.in_formula_block:
+            # append content to formula block
+            self.current_formula_content.append(line)
+            return
 
         # Codeblock
         if line.startswith("```"):
@@ -51,6 +75,12 @@ class TexParser:
 
         # remove leading and trailing whitespaces
         line = self._preprocess_line(line)
+
+        # slide break (---)
+        if line == "---":
+            self.current_list = None
+            self.document.add_component(xwm.SlideBreak())
+            return
 
         # unordered list
         if re.match(r"^[-+*]\s", line):

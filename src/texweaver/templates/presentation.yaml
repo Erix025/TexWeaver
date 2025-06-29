@@ -1,0 +1,191 @@
+name: "Presentation Template"
+description: "Template for Beamer presentations"
+author: "TexWeaver"
+version: "1.0"
+
+# Document structure
+document:
+  preamble: |
+    \documentclass[aspectratio=169]{{beamer}}
+    \usepackage[utf8]{{inputenc}}
+    \usepackage[T1]{{fontenc}}
+    \usepackage{{ctex}}
+    \usepackage{{amsmath,amsfonts,amssymb}}
+    \usepackage{{graphicx}}
+    \usepackage{{listings}}
+    \usepackage{{xcolor}}
+    \usepackage{{fontspec}}
+    \lstset{{
+      basicstyle=\ttfamily\tiny,
+      breaklines=true,
+      frame=single,
+      showstringspaces=false
+    }}
+    \usetheme{{Madrid}}
+    \usecolortheme{{default}}
+
+  begin_document: |
+    \begin{{document}}
+
+  end_document: |
+    \end{{document}}
+
+# Text formatting (Presentation style)
+formatting:
+  heading1: |
+    \frametitle{{{content}}}
+
+  heading2: |
+    \frametitle{{{content}}}
+
+  heading3: |
+    \framesubtitle{{{content}}}
+
+  heading4: |
+    \framesubtitle{{{content}}}
+
+  paragraph: |
+    {content}
+
+  text: "{content}"
+
+  bold: "\\textbf{{{content}}}"
+
+  italic: "\\textit{{{content}}}"
+
+  inline_code: "\\texttt{{{content}}}"
+
+# Presentation specific
+presentation:
+  frame_begin: |
+    \begin{{frame}}
+
+  frame_end: |
+    \end{{frame}}
+
+  title_slide: |
+    \titlepage
+
+  section_slide: |
+    \section{{{title}}}
+    \begin{{frame}}
+    \frametitle{{{title}}}
+    {content}
+    \end{{frame}}
+
+# Math
+math:
+  inline_formula: "${content}$"
+
+  block_formula: |
+    \[
+    {content}
+    \]
+
+  display_math: |
+    \[
+    {content}
+    \]
+
+# Lists (Presentation optimized)
+lists:
+  ordered_list: |
+    \begin{{enumerate}}
+    {items}
+    \end{{enumerate}}
+
+  unordered_list: |
+    \begin{{itemize}}
+    {items}
+    \end{{itemize}}
+
+  list_item: "  \\item {content}"
+
+  list_item_overlay: "  \\item<{overlay}> {content}"
+
+# Code (Presentation style)
+code:
+  inline_code: "\\texttt{{{content}}}"
+
+  code_block: |
+    \begin{{lstlisting}}[
+      language={lang},
+      basicstyle=\scriptsize\ttfamily,
+      frame=single,
+      breaklines=true
+    ]
+    {code}
+    \end{{lstlisting}}
+
+# Media (Presentation optimized)
+media:
+  image: |
+    \begin{{figure}}
+    \centering
+    \includegraphics[width={width}\textwidth]{{{src}}}
+    \caption{{{alt}}}
+    \end{{figure}}
+
+  image_overlay: |
+    \begin{{figure}}
+    \centering
+    \includegraphics<{overlay}>[width={width}\textwidth]{{{src}}}
+    \caption{{{alt}}}
+    \end{{figure}}
+
+# Tables (Simple for presentations)
+tables:
+  table_begin: |
+    \begin{{table}}
+    \centering
+    \begin{{tabular}}{{{alignment}}}
+
+  table_end: |
+    \end{{tabular}}
+    \caption{{{caption}}}
+    \end{{table}}
+
+  table_row: "{cells} \\\\"
+
+  table_header_row: "{cells} \\\\ \\hline"
+
+  table_cell: "{content}"
+
+  table_header_cell: "\\textbf{{{content}}}"
+
+# Special environments (Presentation)
+environments:
+  alert: |
+    \alert{{{content}}}
+
+  block: |
+    \begin{{block}}{{{title}}}
+    {content}
+    \end{{block}}
+
+  example_block: |
+    \begin{{exampleblock}}{{{title}}}
+    {content}
+    \end{{exampleblock}}
+
+  alert_block: |
+    \begin{{alertblock}}{{{title}}}
+    {content}
+    \end{{alertblock}}
+
+  columns: |
+    \begin{{columns}}
+    {content}
+    \end{{columns}}
+
+  column: |
+    \begin{{column}}{{{width}}}
+    {content}
+    \end{{column}}
+
+# Slide management
+slide:
+  slide_break: |
+    \end{frame}
+
+    \begin{frame}

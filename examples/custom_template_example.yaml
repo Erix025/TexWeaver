@@ -1,0 +1,34 @@
+name: "Custom Example Template"
+description: "A demonstration of custom template features"
+author: "TexWeaver User"
+version: "1.0"
+
+# Text formatting (Custom style)
+formatting:
+  heading1: "\\section{{{content}}}"
+  heading2: "\\subsection{{{content}}}"
+  heading3: "\\subsubsection{{{content}}}"
+  paragraph: "{content}"
+  text: "{content}"
+  bold: "\\textbf{{{content}}}"
+  italic: "\\textit{{{content}}}"
+
+# Math
+math:
+  inline_formula: "${{{content}}}$"
+  block_formula: "\\begin{{equation}}\n{{{content}}}\n\\end{{equation}}"
+
+# Lists
+lists:
+  ordered_list: "\\begin{{enumerate}}\n{items}\n\\end{{enumerate}}"
+  unordered_list: "\\begin{{itemize}}\n{items}\n\\end{{itemize}}"
+  list_item: "  \\item {{{content}}}"
+
+# Code
+code:
+  inline_code: "\\texttt{{{content}}}"
+  code_block: "\\begin{{lstlisting}}[language={lang}]\n{{{code}}}\n\\end{{lstlisting}}"
+
+# Media
+media:
+  image: "\\begin{{figure}}[H]\n\\centering\n\\includegraphics[width={width}\\textwidth]{{{src}}}\n\\caption{{{alt}}}\n\\end{{figure}}"

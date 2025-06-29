@@ -1,0 +1,171 @@
+name: "Default LaTeX Template"
+description: "Standard LaTeX document template"
+author: "TexWeaver"
+version: "1.0"
+
+# Document structure
+document:
+  preamble: |
+    \documentclass{{article}}
+    \usepackage[utf8]{{inputenc}}
+    \usepackage[T1]{{fontenc}}
+    \usepackage{{ctex}}
+    \usepackage{{amsmath}}
+    \usepackage{{amsfonts}}
+    \usepackage{{amssymb}}
+    \usepackage{{graphicx}}
+    \usepackage{{float}}
+    \usepackage{{listings}}
+    \usepackage{{xcolor}}
+    \usepackage{{fontspec}}
+    \lstset{{
+      basicstyle=\ttfamily,
+      breaklines=true,
+      frame=single,
+      numbers=left,
+      numberstyle=\tiny,
+      showstringspaces=false
+    }}
+
+  begin_document: |
+    \begin{{document}}
+
+  end_document: |
+    \end{{document}}
+
+# Text formatting
+formatting:
+  heading1: |
+    \section{{{content}}}
+
+  heading2: |
+    \subsection{{{content}}}
+
+  heading3: |
+    \subsubsection{{{content}}}
+
+  heading4: |
+    \paragraph{{{content}}}
+
+  heading5: |
+    \subparagraph{{{content}}}
+
+  paragraph: |
+    {content}
+
+  text: "{content}"
+
+  bold: "\\textbf{{{content}}}"
+
+  italic: "\\textit{{{content}}}"
+
+  inline_code: "\\texttt{{{content}}}"
+
+  strikethrough: "\\sout{{{content}}}"
+
+# Math
+math:
+  inline_formula: "${content}$"
+
+  block_formula: |
+    \[
+    {content}
+    \]
+
+  display_math: |
+    \[
+    {content}
+    \]
+
+# Lists
+lists:
+  ordered_list: |
+    \begin{{enumerate}}
+    {items}
+    \end{{enumerate}}
+
+  unordered_list: |
+    \begin{{itemize}}
+    {items}
+    \end{{itemize}}
+
+  list_item: "  \\item {content}"
+
+# Code
+code:
+  inline_code: "\\texttt{{{content}}}"
+
+  code_block: |
+    \begin{{lstlisting}}[language={lang}]
+    {code}
+    \end{{lstlisting}}
+
+  code_block_with_caption: |
+    \begin{{figure}}[H]
+    \centering
+    \begin{{lstlisting}}[language={lang}]
+    {code}
+    \end{{lstlisting}}
+    \caption{{{caption}}}
+    \end{{figure}}
+
+# Media
+media:
+  image: |
+    \begin{{figure}}[H]
+    \centering
+    \includegraphics[width={width}\textwidth]{{{src}}}
+    \caption{{{alt}}}
+    \end{{figure}}
+
+  image_inline: "\\includegraphics[height=1em]{{{src}}}"
+
+# Links and references
+links:
+  link: "\\href{{{url}}}{{{text}}}"
+
+  internal_ref: "\\ref{{{label}}}"
+
+  citation: "\\cite{{{key}}}"
+
+# Tables
+tables:
+  table_begin: |
+    \begin{{table}}[H]
+    \centering
+    \begin{{tabular}}{{{alignment}}}
+
+  table_end: |
+    \end{{tabular}}
+    \caption{{{caption}}}
+    \end{{table}}
+
+  table_row: "{cells} \\\\"
+
+  table_header_row: "{cells} \\\\ \\hline"
+
+  table_cell: "{content}"
+
+  table_header_cell: "\\textbf{{{content}}}"
+
+# Special environments
+environments:
+  quote: |
+    \begin{{quote}}
+    {content}
+    \end{{quote}}
+
+  blockquote: |
+    \begin{{quotation}}
+    {content}
+    \end{{quotation}}
+
+  note: |
+    \begin{{tcolorbox}}[colback=blue!5!white,colframe=blue!75!black,title=Note]
+    {content}
+    \end{{tcolorbox}}
+
+  warning: |
+    \begin{{tcolorbox}}[colback=yellow!5!white,colframe=orange!75!black,title=Warning]
+    {content}
+    \end{{tcolorbox}}

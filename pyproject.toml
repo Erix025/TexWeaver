@@ -54,6 +54,9 @@ texweaver = "texweaver.entrypoint:main"
 [tool.hatch.build.targets.wheel]
 packages = ["src/texweaver"]
 
+[tool.hatch.build.targets.wheel.shared-data]
+"src/texweaver/templates" = "texweaver/templates"
+
 [tool.hatch.build.targets.sdist]
 include = [
     "/src",
