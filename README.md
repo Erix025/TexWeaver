@@ -58,8 +58,23 @@ uv run mypy src
 
 ## Usage
 
+### With activated virtual environment
+
 ```bash
+source .venv/bin/activate
 texweaver input.md output.tex
+```
+
+### With uv run (recommended)
+
+```bash
+uv run texweaver input.md output.tex
+```
+
+### Direct execution
+
+```bash
+.venv/bin/texweaver input.md output.tex
 ```
 
 ## License
